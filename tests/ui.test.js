@@ -134,5 +134,40 @@ test('Submit Login Form with empty password input', async( {page} ) => {
     expect(page.url()).toBe('http://localhost:3000/login')
 });
 
+test('Submit the Register Form with Valid Values', async({page}) => {
+    await page.goto(server);
+    await page.goto('http://localhost:3000/register');
+    const password = '123456';
+    const confirmed_password = '123456';
+    await page.fill('input[name="email"]', 'dam@abv.bg');
+    await page.fill('input[name="password"]', password);
+    await page.fill('input[name="confirm-pass"]', confirmed_password);
+    await page.click('//*[@id="register-form"]/fieldset/input');
+    await page.waitForLoadState('load');
+    const MyBooksLink = await page.$('a[href="/profile"]');
+    const isMyBookselementVisibe = await MyBooksLink.isVisible();
+    expect(isMyBookselementVisibe).toBe(true)
+    const userEmailText = await page.textContent('//*[@id="user"]/span');
+    expect(userEmailText).toBe('Welcome, dam@abv.bg');
+    expect(page.url()).toBe('http://localhost:3000/catalog');
+});
 
+test('Submit the Form with Empty Values', async({page}) => {
+    await page.goto(server);
+    await page.goto('http://localhost:3000/register');
+    await page.fill('input[name="email"]', 'dam@abv.bg');
+    await page.fill('input[name="password"]', '');
+    await page.fill('input[name="confirm-pass"]', '');
+    // Set up the dialog event listener and click the submit button
+    page.once('dialog', async dialog => {
+        // Verify the dialog type and message
+        expect(dialog.type()).toBe('alert');
+        expect(dialog.message()).toContain('All fields are required!');
+        // Accept the dialog
+        await dialog.accept();
+    });
+    await page.click('//*[@id="register-form"]/fieldset/input');
+    await page.$('a[href="/register"]');
+    expect(page.url()).toBe('http://localhost:3000/register')
+});
 
