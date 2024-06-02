@@ -106,15 +106,33 @@ test("Submit the Form with Valid Credentials", async( {page}) => {
 test('Submit Login Form with empty input', async( {page} ) => {
     await page.goto(server);
     await page.goto('http://localhost:3000/login');   
-    await page.click('input[type="submit"]');
-
     page.on('dialog', async dialog => {
-        expect(dialog.type()).toContain('alert');
+        expect(dialog.type()).toBe('alert');
         expect(dialog.message()).toContain('All fields are required!');
         await dialog.accept();
     });
+    await page.click('input[type="submit"]');    
     await page.$('a[href="/login"]');
     expect(page.url()).toBe('http://localhost:3000/login')
 });
+
+test('Submit Login Form with empty password input', async( {page} ) => {
+    await page.goto(server);
+    await page.goto('http://localhost:3000/login');
+    await page.fill('input[name="email"]', 'peter@abv.bg'); 
+    await page.fill('input[name="password"]', '');  
+    // Set up the dialog event listener and click the submit button
+    page.once('dialog', async dialog => {
+        // Verify the dialog type and message
+        expect(dialog.type()).toBe('alert');
+        expect(dialog.message()).toContain('All fields are required!');
+        // Accept the dialog
+        await dialog.accept();
+     });
+    await page.click('input[type="submit"]');
+    await page.$('a[href="/login"]');
+    expect(page.url()).toBe('http://localhost:3000/login')
+});
+
 
 
