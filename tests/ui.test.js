@@ -171,3 +171,41 @@ test('Submit the Form with Empty Values', async({page}) => {
     expect(page.url()).toBe('http://localhost:3000/register')
 });
 
+test('Submit the Form with Empty Email', async({page}) => {
+    await page.goto(server);
+    await page.goto('http://localhost:3000/register');
+    await page.fill('input[name="email"]', '');
+    await page.fill('input[name="password"]', '123456');
+    await page.fill('input[name="confirm-pass"]', '123456');
+    // Set up the dialog event listener and click the submit button
+    page.once('dialog', async dialog => {
+        // Verify the dialog type and message
+        expect(dialog.type()).toBe('alert');
+        expect(dialog.message()).toContain('All fields are required!');
+        // Accept the dialog
+        await dialog.accept();
+    });
+    await page.click('//*[@id="register-form"]/fieldset/input');
+    await page.$('a[href="/register"]');
+    expect(page.url()).toBe('http://localhost:3000/register')
+});
+
+test('Submit the Registration Form with Valid Email Different Passwords', async({page}) => {
+    await page.goto(server);
+    await page.goto('http://localhost:3000/register');
+    await page.fill('input[name="email"]', 'd@abv.bg');
+    await page.fill('input[name="password"]', '123456');
+    await page.fill('input[name="confirm-pass"]', '1234');
+    // Set up the dialog event listener and click the submit button
+    page.once('dialog', async dialog => {
+        // Verify the dialog type and message
+        expect(dialog.type()).toBe('alert');
+        expect(dialog.message()).toContain("Passwords don't match!");
+        // Accept the dialog
+        await dialog.accept();
+    });
+    await page.click('//*[@id="register-form"]/fieldset/input');
+    await page.$('a[href="/register"]');
+    expect(page.url()).toBe('http://localhost:3000/register')
+});
+
