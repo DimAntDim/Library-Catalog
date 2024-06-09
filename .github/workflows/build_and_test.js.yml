@@ -38,8 +38,8 @@ jobs:
         cache: 'npm'
     - name: Install Dependencies
       run: npm install
-    - name: Install Chromium
-      run: sudo apt-get install -y chromium-browser
+    - name: Install Playwright Browsers
+      run: npx playwright install
     - name: Run Frontend
       run: npm run start-fe &
     - name: Wait Frontend to be Ready
