@@ -47,6 +47,6 @@ jobs:
     - name: Run Backend
       run: npm run start-be &
     - name: Wait Backend to be Ready
-      run: sleep 10
+      run: sleep 30
     - name: Integration Tests
       run: npm run test:ui
