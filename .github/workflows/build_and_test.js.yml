@@ -9,9 +9,9 @@ on:
 jobs:
   Npm_security_Test:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Repo  
+      uses: actions/checkout@v4
     - name: Use Node.js 20
       uses: actions/setup-node@v4
       with:
@@ -30,7 +30,7 @@ jobs:
     needs: Npm_security_Test
     steps:
     - name: Checkout Repo
-      run: actions/checkout@v4
+      uses: actions/checkout@v4
     - name: Use Node.js 20
       uses: actions/setup-node@v4
       with:
