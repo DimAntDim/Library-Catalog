@@ -39,8 +39,12 @@ jobs:
     - name: Install Dependencies
       run: npm install
     - name: Run Frontend
-      run: npm run start-fe
+      run: npm run start-fe &
+    - name: Wait Frontend to be Ready
+      run: sleep 10
     - name: Run Backend
-      run: npm run start-be
+      run: npm run start-be &
+    - name: Wait Backend to be Ready
+      run: sleep 10
     - name: Integration Tests
       run: npm run test:ui
