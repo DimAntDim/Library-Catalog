@@ -22,7 +22,7 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - name: Check npm Security
-      run: npm test-npm-security
+      run: npm run npm-security-test
 
   Build_and_Integration_Tests:
     runs-on: ubuntu-latest
